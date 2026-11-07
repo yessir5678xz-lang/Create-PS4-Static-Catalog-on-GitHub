@@ -1,0 +1,37 @@
+name: Build SSPI source
+on:
+  workflow_dispatch:
+    inputs:
+      catalog_file:
+        description: Input catalog JSON path
+        required: true
+        default: catalog/example.json
+      output_name:
+        description: Output filename under dist/
+        required: true
+        default: personal-library.gssource
+  push:
+    paths:
+      - 'catalog/**'
+      - 'tools/**'
+      - '.github/workflows/build.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build source
+        run: |
+          mkdir -p dist
+          INPUT="${{ inputs.catalog_file || 'catalog/example.json' }}"
+          OUTPUT="${{ inputs.output_name || 'personal-library.gssource' }}"
+          python tools/build_source.py "$INPUT" "dist/$OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sspi-gssource
+          path: dist/*.gssource
