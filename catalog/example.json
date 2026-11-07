@@ -1,0 +1,26 @@
+{
+  "source": {
+    "id": "personal-static-catalog",
+    "name": "Personal Static Catalog",
+    "version": "1.0",
+    "description": "Example static catalog for SSPI"
+  },
+  "titles": [
+    {
+      "titleId": "CUSA00001",
+      "name": "Example PS4 Title",
+      "region": "US",
+      "searchText": "example demo",
+      "packages": [
+        {
+          "id": "example-base",
+          "kind": "base",
+          "url": "https://example.invalid/package.pkg",
+          "accessType": "Direct",
+          "label": "Example base package",
+          "hoster": "Example"
+        }
+      ]
+    }
+  ]
+}
