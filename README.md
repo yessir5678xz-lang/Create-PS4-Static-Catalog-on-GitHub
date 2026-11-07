@@ -1,30 +1,37 @@
 # PS4 SSPI Static Catalog Builder
 
-This repository contains a builder for SSPI's `embedded-catalog-v1` static source format.
+This repository builds SSPI embedded-catalog-v1 package sources from catalog JSON.
 
-## Quick start
+## Build
 
-1. Edit `catalog/example.json` and add titles plus package links you own or are authorized to distribute.
-2. Open **Actions → Build SSPI source → Run workflow**.
-3. Keep the default catalog path or enter your own JSON path, then run it.
-4. Open the completed workflow run and download the **sspi-gssource** artifact.
-5. Add the downloaded `.gssource` in SSPI under **Settings → Connections → Manage sources → Add a source link**. Host the file at a direct HTTPS download URL if SSPI requires a URL.
+1. Edit catalog/example.json with PS4 homebrew, public-domain packages, or packages you own and are authorized to distribute.
+2. Open Actions → Build SSPI source → Run workflow.
+3. Download the sspi-gssource artifact from the completed run.
+4. Add the generated source to SSPI.
 
-The builder project is included in `SSPI-Static-Catalog-Builder.zip`; the workflow extracts it and runs its Python builder. No third-party Python packages are required.
+The builder is included in SSPI-Static-Catalog-Builder.zip. The workflow extracts it and builds the .gssource archive.
 
-## Catalog entries
+## Catalog data
 
-- Use PS4 title IDs such as `CUSA12345`; PS5 PPSA IDs are not supported by this engine.
-- Package kinds: `base`, `update`, `dlc`, or `unknown`.
-- `accessType`: `Direct` for a direct file URL, or `HosterLanding` for a host page.
-- Use only HTTP(S) package URLs you control or are authorized to share.
-- Never include Real-Debrid, TorBox, AllDebrid, Premiumize API keys, cookies, session tokens, or personal credentials in catalog files.
+Each title needs a supported PS4 title ID, name, and one or more package records. Package kinds are base, update, dlc, or unknown; access types are Direct and HosterLanding.
 
-The included example uses `.invalid`, a reserved non-working domain. Replace it before expecting a download to work.
+Only add homebrew, public-domain files, your own dumps, or files you are otherwise authorized to distribute. This repository does not scrape or mirror copyrighted game libraries.
 
-## Important
+## Local archive-password lookup
 
-A successful build checks the source archive's structure and metadata. It does not prove every download URL works or guarantee compatibility with every SSPI release. Test with a permitted homebrew/test package first.
+The helper in tools/password_lookup.py merges passwords you already know into a local catalog. Copy passwords.local.example.json to passwords.local.json, replace the example values, then run:
+
+    python tools/password_lookup.py catalog/example.json catalog/with-local-passwords.json
+
+Then build the output:
+
+    python SSPI-Static-Catalog/tools/build_source.py catalog/with-local-passwords.json dist/private-source.gssource
+
+The helper performs local lookup only. It does not retrieve, guess, scrape, or bypass passwords. Never commit passwords.local.json or publish a generated source containing private passwords. The local password file is ignored by Git.
+
+## Download speed
+
+A source file cannot change PS4 network settings or override SSPI's downloader. See docs/download-performance.md for practical tuning. SSPI already uses adaptive download connections; a fake speed-booster field would do nothing.
 
 ## References
 

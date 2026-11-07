@@ -3,3 +3,5 @@ __pycache__/
 .venv/
 venv/
 dist/*.gssource
+passwords.local.json
+catalog/with-local-passwords.json
