@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -55,3 +55,13 @@ jobs:
         with:
           name: sspi-gssource
           path: dist/*.gssource
+      - name: Publish direct-download source release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: sspi-source-latest
+          name: Latest SSPI Source
+          body: "Automatically generated SSPI source. Replace the example catalog with packages you are authorized to distribute. This demo catalog contains a placeholder URL."
+          files: dist/*.gssource
+          overwrite_files: true
+          prerelease: true
+          make_latest: false
