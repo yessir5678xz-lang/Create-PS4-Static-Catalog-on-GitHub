@@ -35,7 +35,7 @@ The helper in tools/password_lookup.py merges passwords you already know into a 
 
 Then build the output:
 
-    python SSPI-Static-Catalog/ tools/build_source.py catalog/with-local-passwords.json dist/private-source.gssource
+    python SSPI-Static-Catalog/tools/build_source.py catalog/with-local-passwords.json dist/private-source.gssource
 
 The helper performs local lookup only. It does not retrieve, guess, scrape, or bypass passwords. Never commit passwords.local.json or publish a generated source containing private passwords. The local password file is ignored by Git.
 
