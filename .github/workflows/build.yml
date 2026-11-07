@@ -13,6 +13,9 @@ on:
   push:
     paths:
       - 'catalog/**'
+      - 'tools/**'
+      - 'docs/**'
+      - 'README.md'
       - 'SSPI-Static-Catalog-Builder.zip'
       - '.github/workflows/build.yml'
 jobs:
@@ -25,9 +28,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Extract builder
+      - name: Test local password helper
         run: |
-          unzip -q SSPI-Static-Catalog-Builder.zip -d .
+          python -m py_compile tools/password_lookup.py
+          python - <<'PY'
+          import json, tempfile
+          from pathlib import Path
+          from tools.password_lookup import apply_passwords
+          catalog = {"titles":[{"packages":[{"id":"pkg-1"}]}]}
+          with tempfile.TemporaryDirectory() as tmp:
+              path = Path(tmp) / "passwords.json"
+              path.write_text(json.dumps({"packagePasswords":{"pkg-1":["known-password"]}}))
+              result = apply_passwords(catalog, path)
+              assert result["titles"][0]["packages"][0]["archivePasswords"] == ["known-password"]
+          print("Password helper test passed")
+          PY
+      - name: Extract builder
+        run: unzip -q SSPI-Static-Catalog-Builder.zip -d .
       - name: Build source
         run: |
           mkdir -p dist
